@@ -21,6 +21,7 @@ var User = (function () {
             success: function (data) {
                 ViewModel.UserViewModel.users
                     .push(new User(data.Id, data.FirstName, data.LastName));
+                this.FrstName = "";
             }
         });
     };
@@ -59,6 +60,7 @@ $(document).ready(function () {
     var userList = new User(this.Id, this.FirstName, this.LastName);
     $("#btnAddUser").click(function () {
         userList.addUser();
+        ViewModel.UserViewModel.users.push(new User(serverUser.Id, serverUser.FirstName, serverUser.LastName));
     });
     var remove = new UserViewModel();
     $("#removeUser").click(function () { remove.removeUsers(_this); });
