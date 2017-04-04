@@ -4,27 +4,41 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using TypeScript_Table.Models;
+
 namespace TypeScript_Table.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            var students = UsersRepository.GetUsers();
+            return View(students);
         }
 
-        public ActionResult About()
+     
+        public JsonResult GetUsers()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            var jsondata = UsersRepository.GetUsers();
+            return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult Contact()
+        [HttpPost]
+        public ActionResult AddUsers(Users user)
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            UsersRepository.InsertUser(user);
+            return Json(user, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult EditUser(Users user)
+        {
+            UsersRepository.EditUser(user);
+            return Json(user, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult DeleteUser(int Id)
+        {
+            UsersRepository.DeleteUser(Id);
+            return Json("Удален");
         }
     }
 }
