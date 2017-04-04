@@ -19,11 +19,11 @@
                 <form role="form"  >
                     <div class="form-group">
                         <label for="inpFirstName">Имя</label>
-                        <input id="inpFirstName" type="text" class="form-control"  data-bind="value: FirstName"/>
+                        <input id="inpFirstName" type="text" class="form-control"/>
                     </div>
                     <div class="form-group">
                         <label for="inpLastName">Фамилия</label>
-                        <input id="inpLastName" type="text" class="form-control" data-bind="value: LastName" />
+                        <input id="inpLastName" type="text" class="form-control" />
 
                     </div>
 
@@ -54,7 +54,8 @@
                         <tr>
                             <td data-bind="text: Id"></td>
                             <td data-bind="text: FirstName"></td>
-                            <td data-bind="text: LastName"></td>                          
+                            <td data-bind="text: LastName"></td>     
+                            <td><input type="button" class="btn btn-danger btn-xs" value="Удалить" id="removeUser" /></td>                     
                         </tr>
                     </tbody>
                 </table>

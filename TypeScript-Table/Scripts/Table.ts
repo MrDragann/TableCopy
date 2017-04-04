@@ -10,9 +10,8 @@ class User {
         this.LastName = ko.observable(lastName);
     }
     addUser(): void {
-        
-        this.FirstName = $('#FirstName').val();
-        this.LastName = $('#LastName').val();
+        this.FirstName = $('#inpFirstName').val();
+        this.LastName = $("#inpLastName").val();
         var dataObject = ko.toJSON(this);
         var ViewModel = {
             UserViewModel: new UserViewModel()
@@ -25,7 +24,7 @@ class User {
             success: function (data) {
                 ViewModel.UserViewModel.users
                     .push(new User(data.Id, data.FirstName, data.LastName));
-               
+
             }
         });
     };
@@ -35,6 +34,16 @@ class UserViewModel {
     public users: KnockoutObservableArray<User>;
     constructor() {
         this.users = ko.observableArray([]);
+    }
+    removeUsers(user): void {
+        $.ajax({
+            url: '/home/DeleteUser/' + user.Id(),
+            type: 'post',
+            contentType: 'application/json',
+            success: function () {
+                this.users.remove(user);
+            }
+        });
     }
 }
 $(document).ready(function () {
@@ -57,7 +66,8 @@ $(document).ready(function () {
     $("#btnAddUser").click(() => {
         userList.addUser();
 
-        ViewModel.UserViewModel.users.push(new User(serverUser.Id, serverUser.FirstName,
-            serverUser.LastName)); });
+    });
+    var remove: UserViewModel = new UserViewModel();
+    $("#removeUser").click(() => { remove.removeUsers(this); });
     ko.applyBindings(ViewModel);
 });
