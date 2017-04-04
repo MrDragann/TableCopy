@@ -24,7 +24,7 @@ class User {
             success: function (data) {
                 ViewModel.UserViewModel.users
                     .push(new User(data.Id, data.FirstName, data.LastName));
-                this.FrstName="";
+               
             }
         });
     };
@@ -65,9 +65,11 @@ $(document).ready(function () {
     var userList: User = new User(this.Id, this.FirstName, this.LastName);
     $("#btnAddUser").click(() => {
         userList.addUser();
+        this.FirstName = userList.FirstName;
+        this.LastName = userList.LastName;
 
-        ViewModel.UserViewModel.users.push(new User(serverUser.Id, serverUser.FirstName,
-            serverUser.LastName));
+        ViewModel.UserViewModel.users.push(new User(this.Id, this.FirstName,
+            this.LastName));
     });
     var remove: UserViewModel = new UserViewModel();
     $("#removeUser").click(() => { remove.removeUsers(this); });
