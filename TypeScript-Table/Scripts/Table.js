@@ -1,69 +1,122 @@
 ///<reference path="typings/jquery/jquery.d.ts" />
 ///<reference path="typings/knockout/knockout.d.ts" />
-var User = (function () {
-    function User(id, firstName, lastName) {
-        this.Id = ko.observable(id);
-        this.FirstName = ko.observable(firstName);
-        this.LastName = ko.observable(lastName);
+var ViewModel = (function () {
+    function ViewModel() {
+        this.ItemViewModel = new ItemViewModel();
+        this.UserAction = new UserAction();
+        this.User = new User(null, '', '');
+        ViewModel.Display = ko.observable(false);
     }
-    User.prototype.addUser = function () {
-        this.FirstName = $('#inpFirstName').val();
-        this.LastName = $("#inpLastName").val();
-        var dataObject = ko.toJSON(this);
-        var ViewModel = {
-            UserViewModel: new UserViewModel()
-        };
+    return ViewModel;
+}());
+;
+var UserAction = (function () {
+    function UserAction() {
+    }
+    //Добавление пользователя
+    UserAction.prototype.addUser = function (user) {
+        var dataObject = ko.toJSON(user.User);
         $.ajax({
             url: '/home/AddUsers',
             type: 'post',
             data: dataObject,
             contentType: 'application/json',
             success: function (data) {
-                ViewModel.UserViewModel.users
-                    .push(new User(data.Id, data.FirstName, data.LastName));
+                console.log(dataObject);
+                ItemViewModel.users.push(data);
+                user.User.FirstName("");
+                user.User.LastName("");
+            },
+            error: function () {
+                console.log(dataObject);
             }
         });
     };
     ;
-    return User;
-}());
-var UserViewModel = (function () {
-    function UserViewModel() {
-        this.users = ko.observableArray([]);
-    }
-    UserViewModel.prototype.removeUsers = function (user) {
+    //Удаление пользователя
+    UserAction.prototype.removeUsers = function (user) {
         $.ajax({
-            url: '/home/DeleteUser/' + user.Id(),
+            url: '/home/DeleteUser/' + user.Id,
             type: 'post',
             contentType: 'application/json',
             success: function () {
-                this.users.remove(user);
+                ItemViewModel.users.remove(user);
             }
         });
     };
-    return UserViewModel;
+    //Редактирование пользователя
+    UserAction.prototype.editUser = function (user) {
+        user.User.Id = $("#ID").val();
+        var dataObject = ko.toJSON(user);
+        $.ajax({
+            url: '/home/EditUser',
+            type: 'post',
+            data: dataObject,
+            contentType: 'application/json',
+            success: function (data) {
+                user.User.FirstName("");
+                user.User.LastName("");
+            }
+        });
+    };
+    ;
+    //Закрыть редактирование пользователя
+    UserAction.prototype.closeEditUser = function () {
+        ViewModel.Display(false);
+    };
+    return UserAction;
+}());
+var User = (function () {
+    function User(id, firstName, lastName) {
+        this.Id = ko.observable(id);
+        this.FirstName = ko.observable(firstName);
+        this.LastName = ko.observable(lastName);
+    }
+    return User;
+}());
+var ItemViewModel = (function () {
+    function ItemViewModel() {
+        //следующая страница
+        this.nextPage = function () {
+            if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.users().length) {
+                this.currentPageIndex(this.currentPageIndex() + 1);
+            }
+            else {
+                this.currentPageIndex(0);
+            }
+        };
+        //предыдущая страница
+        this.previousPage = function () {
+            if (this.currentPageIndex() > 0) {
+                this.currentPageIndex(this.currentPageIndex() - 1);
+            }
+            else {
+                this.currentPageIndex((Math.ceil(ItemViewModel.users().length / this.pageSize())) - 1);
+            }
+        };
+        //Передача данных в окно редактирование
+        this.editUserDisplay = function (user) {
+            ViewModel.Display(true);
+            $('#FirstName').val(user.FirstName);
+            $('#LastName').val(user.LastName);
+            $('#ID').val(user.Id);
+        };
+        this.currentPage = ko.observableArray([]);
+        this.pageSize = ko.observable('5');
+        this.currentPageIndex = ko.observable(0);
+        ItemViewModel.users = ko.observableArray([]);
+        var _this = this;
+        $.getJSON('/home/GetUsers', function (data) {
+            ItemViewModel.users(data);
+        });
+        this.currentPage = ko.computed(function () {
+            var pagesize = parseInt(_this.pageSize().toString(), 10), startIndex = pagesize * _this.currentPageIndex(), endIndex = startIndex + pagesize;
+            return ItemViewModel.users.slice(startIndex, endIndex);
+        });
+    }
+    return ItemViewModel;
 }());
 $(document).ready(function () {
-    var _this = this;
-    var serverData;
-    serverData = JSON.parse($("#serverJSON").val());
-    var ViewModel = {
-        UserViewModel: new UserViewModel()
-    };
-    var i;
-    for (i = 0; i < serverData.length; i++) {
-        var serverUser;
-        serverUser = serverData[i];
-        ViewModel.UserViewModel.users.push(new User(serverUser.Id, serverUser.FirstName, serverUser.LastName));
-    }
-    var userList = new User(this.Id, this.FirstName, this.LastName);
-    $("#btnAddUser").click(function () {
-        userList.addUser();
-        _this.FirstName = userList.FirstName;
-        _this.LastName = userList.LastName;
-        ViewModel.UserViewModel.users.push(new User(_this.Id, _this.FirstName, _this.LastName));
-    });
-    var remove = new UserViewModel();
-    $("#removeUser").click(function () { remove.removeUsers(_this); });
-    ko.applyBindings(ViewModel);
+    var viewModel = new ViewModel();
+    ko.applyBindings(viewModel);
 });

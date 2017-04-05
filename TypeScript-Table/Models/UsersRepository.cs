@@ -38,7 +38,9 @@ namespace TypeScript_Table.Models
         }
         public static void EditUser(Users user)
         {
-            UsersList[user.Id - 1] = user;
+            var User = UsersList.FirstOrDefault(x => x.Id == user.Id);
+            User.FirstName = user.FirstName;
+            User.LastName = user.LastName;
 
         }
 
