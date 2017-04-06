@@ -1,23 +1,39 @@
 ///<reference path="typings/jquery/jquery.d.ts" />
 ///<reference path="typings/knockout/knockout.d.ts" />
-var ViewModel = (function () {
-    function ViewModel() {
+/**
+ * Константы для подключение к контролеру
+ */
+var DeleteUser = "/home/DeleteUser/";
+var AddUser = "/home/AddUsers";
+var EditUser = '/home/EditUser';
+var GetUser = '/home/GetUsers';
+/**
+ * Модель таблицы
+ */
+var TableModel = (function () {
+    function TableModel() {
         this.ItemViewModel = new ItemViewModel();
         this.UserAction = new UserAction();
         this.User = new User(null, '', '');
-        ViewModel.Display = ko.observable(false);
+        TableModel.Display = ko.observable(false);
     }
-    return ViewModel;
+    return TableModel;
 }());
 ;
+/**
+ * Действия над пользователем
+ */
 var UserAction = (function () {
     function UserAction() {
     }
-    //Добавление пользователя
+    /**
+     * Добавление пользователя
+     * @param user Модель таблицы
+     */
     UserAction.prototype.addUser = function (user) {
         var dataObject = ko.toJSON(user.User);
         $.ajax({
-            url: '/home/AddUsers',
+            url: AddUser,
             type: 'post',
             data: dataObject,
             contentType: 'application/json',
@@ -33,10 +49,13 @@ var UserAction = (function () {
         });
     };
     ;
-    //Удаление пользователя
+    /**
+     * Удаление пользователя
+     * @param user Пользователь
+     */
     UserAction.prototype.removeUsers = function (user) {
         $.ajax({
-            url: '/home/DeleteUser/' + user.Id,
+            url: DeleteUser + user.Id,
             type: 'post',
             contentType: 'application/json',
             success: function () {
@@ -44,28 +63,40 @@ var UserAction = (function () {
             }
         });
     };
-    //Редактирование пользователя
+    /**
+     *
+     * @param user Модель таблицы
+     */
     UserAction.prototype.editUser = function (user) {
         user.User.Id = $("#ID").val();
+        user.User.FirstName = $("#FirstName").val();
+        user.User.LastName = $("#LastName").val();
         var dataObject = ko.toJSON(user);
         $.ajax({
-            url: '/home/EditUser',
+            url: EditUser,
             type: 'post',
             data: dataObject,
             contentType: 'application/json',
-            success: function (data) {
-                user.User.FirstName("");
-                user.User.LastName("");
+            success: function () {
+                $.getJSON('/home/GetUsers', function (data) {
+                    ItemViewModel.users(data);
+                    TableModel.Display(false);
+                });
             }
         });
     };
     ;
-    //Закрыть редактирование пользователя
+    /**
+     * Закрыть окно с редактированием
+     */
     UserAction.prototype.closeEditUser = function () {
-        ViewModel.Display(false);
+        TableModel.Display(false);
     };
     return UserAction;
 }());
+/**
+ * Модель пользователя
+ */
 var User = (function () {
     function User(id, firstName, lastName) {
         this.Id = ko.observable(id);
@@ -74,6 +105,9 @@ var User = (function () {
     }
     return User;
 }());
+/**
+ * Управление таблицей
+ */
 var ItemViewModel = (function () {
     function ItemViewModel() {
         //следующая страница
@@ -96,7 +130,7 @@ var ItemViewModel = (function () {
         };
         //Передача данных в окно редактирование
         this.editUserDisplay = function (user) {
-            ViewModel.Display(true);
+            TableModel.Display(true);
             $('#FirstName').val(user.FirstName);
             $('#LastName').val(user.LastName);
             $('#ID').val(user.Id);
@@ -105,8 +139,10 @@ var ItemViewModel = (function () {
         this.pageSize = ko.observable('5');
         this.currentPageIndex = ko.observable(0);
         ItemViewModel.users = ko.observableArray([]);
+        ItemViewModel.sortType = "ascending";
+        this.iconType = ko.observable("");
         var _this = this;
-        $.getJSON('/home/GetUsers', function (data) {
+        $.getJSON(GetUser, function (data) {
             ItemViewModel.users(data);
         });
         this.currentPage = ko.computed(function () {
@@ -114,9 +150,31 @@ var ItemViewModel = (function () {
             return ItemViewModel.users.slice(startIndex, endIndex);
         });
     }
+    /**
+     * Сортировка таблицы
+     * @param users Пользователь
+     * @param e Jqvery.Event
+     */
+    ItemViewModel.prototype.sortTable = function (users, e) {
+        var orderProp = $(e.target).attr("data-column");
+        ItemViewModel.users.sort(function (left, right) {
+            var leftVal = left[orderProp];
+            var rightVal = right[orderProp];
+            if (ItemViewModel.sortType == "ascending") {
+                return leftVal < rightVal ? 1 : -1;
+            }
+            else {
+                return leftVal > rightVal ? 1 : -1;
+            }
+        });
+        // Смена иконки
+        ItemViewModel.sortType = (ItemViewModel.sortType == "ascending") ? "descending" : "ascending";
+        this.iconType((ItemViewModel.sortType == "ascending") ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down");
+    };
+    ;
     return ItemViewModel;
 }());
 $(document).ready(function () {
-    var viewModel = new ViewModel();
+    var viewModel = new TableModel();
     ko.applyBindings(viewModel);
 });
