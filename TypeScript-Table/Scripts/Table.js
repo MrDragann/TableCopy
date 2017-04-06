@@ -208,6 +208,19 @@ ko.components.register('Table-Users', {
         + '<tbody data-bind="template: { name: currentTemplate, foreach: $root.ItemViewModel.currentPage }"></tbody>'
         + '</table>'
 });
+/**
+* Компонент пагинации таблицы
+*/
+ko.components.register('Table-Pagination', {
+    viewModel: function (params) {
+        this.viewModel = params.$root;
+        this.User = this.viewModel.User;
+        this.ItemViewModel = this.viewModel.ItemViewModel;
+    }, template: '<div class="panel panel-info"><div class="panel-heading">    <h2 class="panel-title">Редактировать  пользователя</h2 ></div>'
+        + '<div class="panel-body"><form role="form" ><div class="form-group" ><label for="test" > Имя </label><input id= "FirstName" type= "text" class="form-control" /></div>'
+        + '< div class="form-group" > <label for="LastName" > Фамилия < /label> < input id= "LastName" type= "text" class="form-control" /> <input id="ID" type= "hidden" class="form-control" data- bind="value: User.Id" />  </div>'
+        + '</form><input type= "button" id= "btnEditUser" class="btn btn-primary" value= "Изменить" data- bind="click: $root.UserAction.editUser" /> <input type="button" id= "btnCloseEditUser" class="btn btn-danger" value= "Отмена" data- bind="click: $root.UserAction.closeEditUser" style= "float:right;" /></div></div>'
+});
 $(document).ready(function () {
     var viewModel = new TableModel();
     ko.applyBindings(viewModel);

@@ -14,15 +14,15 @@
     <!--Конец регистрации пользователя-->
 
     <!--Таблица пользователей-->
-    <div data-bind='component: {name: "Table-Users",params: {  $root }}'>
-        <!--Конец таблицы пользователей-->
-        <!--Редактирование пользователей-->
-        <div class="col-md-3" data-bind="visible: TableModel.Display">
-            @Html.Partial("_EditTable")
-        </div>
-        <!--Конец редактирование пользователей-->
-
+    <div data-bind='component: {name: "Table-Users",params: {  $root }}'><div data-bind='component: {name: "Table-Pagination",params: {  $root }}'></div>
+    <!--Конец таблицы пользователей-->
+    <!--Редактирование пользователей-->
+    <div class="col-md-3" data-bind="visible: TableModel.Display">
+        @Html.Partial("_EditTable")
     </div>
+    <!--Конец редактирование пользователей-->
+
+</div>
 
     <!--Шаблон чтения-->
     <script type="text/html" id="readonlyTemplate">
