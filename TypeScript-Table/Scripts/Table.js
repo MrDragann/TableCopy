@@ -14,7 +14,7 @@ var TableModel = (function () {
     function TableModel() {
         this.ItemViewModel = new ItemViewModel();
         this.UserAction = new UserAction();
-        this.User = new User(null, 'ss', 'ss');
+        this.User = new User(null, '', '');
         TableModel.Display = ko.observable(false);
     }
     return TableModel;
@@ -31,7 +31,7 @@ var UserAction = (function () {
      * @param user Модель таблицы
      */
     UserAction.prototype.addUser = function (user) {
-        var dataObject = ko.toJSON(user);
+        var dataObject = ko.toJSON(user.User);
         $.ajax({
             url: AddUser,
             type: 'post',
@@ -40,8 +40,6 @@ var UserAction = (function () {
             success: function (data) {
                 console.log(dataObject);
                 ItemViewModel.Collection.push(data);
-                user.FirstName("");
-                user.LastName("");
             },
             error: function () {
                 console.log(dataObject);
@@ -178,20 +176,40 @@ var ItemViewModel = (function () {
     ;
     return ItemViewModel;
 }());
+/**
+* Компонент для регистрации пользовотеля
+*/
 ko.components.register('Add-User', {
     viewModel: function (params) {
-        this.FirstName = params.User.FirstName();
-        this.LastName = params.User.LastName();
+        this.viewModel = params.$root;
+        this.User = this.viewModel.User;
     }, template: '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h2 class="panel-title">Добавить нового пользователя</h2></div>'
         + '<div class="panel-body">'
         + '<form role="form">'
-        + '<div class="form-group"><label for="inpFirstName" > Имя </label> <input id="inpFirstName" type="text" class="form-control" data-bind="value: FirstName" /></div>'
-        + '<div class="form-group"> <label for="inpLastName" > Фамилия </label> <input id="inpLastName" type="text" class="form-control" data-bind="value: LastName" /></div>'
+        + '<div class="form-group"><label for="inpFirstName" > Имя </label> <input id="inpFirstName" type="text" class="form-control" data-bind="value:User.FirstName" /></div>'
+        + '<div class="form-group"> <label for="inpLastName" > Фамилия </label> <input id="inpLastName" type="text" class="form-control" data-bind="value: User.LastName" /></div>'
         + '</form>'
         + '<input type="button" id= "btnAddUser" class="btn btn-primary" value="Добавить" data-bind="click: $root.UserAction.addUser" />'
         + '</div></div></div>'
+});
+/**
+* Компонент таблицы пользовотелей
+*/
+ko.components.register('Table-Users', {
+    viewModel: function (params) {
+        this.viewModel = params.$root;
+        this.User = this.viewModel.User;
+        this.ItemViewModel = this.viewModel.ItemViewModel;
+    }, template: '<div class="col-md-9" style="float:right;">    <div class="panel panel-primary"><div class="panel-heading"><h2 class="panel-title">Список пользователй</h2></div>'
+        + '<div class="panel-body"><table class="table table-striped table-bordered table-condensed" data-bind="with: ItemViewModel"><thead>'
+        + '<tr data-bind="click: sortTable"><th data-column="Id">ID <span>  <i data-bind="attr: { class: iconType }"></i></span></th>'
+        + '<th data-column="FirstName">Имя<span><i data-bind="attr: { class: iconType }"></i></span></th><th data-column="LastName"> Фамилия<span><i data-bind="attr: { class: iconType }"></i> </span></th><th></th><th></th></tr>'
+        + '</thead>'
+        + '<tbody data-bind="template: { name: currentTemplate, foreach: $root.ItemViewModel.currentPage }"></tbody>'
+        + '</table>'
 });
 $(document).ready(function () {
     var viewModel = new TableModel();
     ko.applyBindings(viewModel);
 });
+//# sourceMappingURL=Table.js.map
