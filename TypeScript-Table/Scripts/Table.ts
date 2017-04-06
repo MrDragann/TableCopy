@@ -14,7 +14,7 @@ const GetUser = '/home/GetUsers';
 class TableModel  {
     ItemViewModel: ItemViewModel = new ItemViewModel();
     UserAction: UserAction = new UserAction();
-    User: User = new User(null, '', '');
+    User: User = new User(null, 'ss', 'ss');
     //Модальное окно для редактирование пользователя
     static Display: KnockoutObservable<boolean>;
     constructor() {
@@ -31,7 +31,7 @@ class UserAction {
     * @param user Модель таблицы
     */
     addUser(user: any): void {        
-        var dataObject = ko.toJSON(user.User);
+        var dataObject = ko.toJSON(user);
         $.ajax({
             url: AddUser,
             type: 'post',
@@ -39,9 +39,9 @@ class UserAction {
             contentType: 'application/json',
             success: function (data) {
                 console.log(dataObject);
-                ItemViewModel.users.push(data);
-                user.User.FirstName("");
-                user.User.LastName("");
+                ItemViewModel.Collection.push(data);
+                user.FirstName("");
+                user.LastName("");
             },
             error: function () {
                 console.log(dataObject);
@@ -58,7 +58,7 @@ class UserAction {
             type: 'post',
             contentType: 'application/json',
             success: function () {
-                ItemViewModel.users.remove(user);
+                ItemViewModel.Collection.remove(user);
             }
         });
     }
@@ -66,30 +66,25 @@ class UserAction {
        * 
        * @param user Модель таблицы
        */
-        editUser(user: any): void {
-        user.User.Id = $("#ID").val();
-        user.User.FirstName = $("#FirstName").val();
-        user.User.LastName = $("#LastName").val();
-        var dataObject = ko.toJSON(user);
+        editUser(data): void {
+            var user = {
+                Id: data.Id,
+                FirstName: data.FirstName,
+                LastName: data.LastName,
+            };
         $.ajax({
             url: EditUser,
             type: 'post',
-            data: dataObject,
-            contentType: 'application/json',
+            data: user,
             success: function () {
                 $.getJSON('/home/GetUsers', function (data) {
-                    ItemViewModel.users(data);
+                    ItemViewModel.Collection(data);
                     TableModel.Display(false);
                 });
             }
         });
     };
-    /**
-     * Закрыть окно с редактированием
-     */
-    closeEditUser(): void {
-        TableModel.Display(false);
-    }
+  
 }
 
 /**
@@ -112,34 +107,64 @@ class User {
  */
 class ItemViewModel {
     
-    public static users: KnockoutObservableArray<User>;
+    public static Collection: KnockoutObservableArray<any>;
     currentPage: any;
     pageSize: KnockoutObservable<string>;
     currentPageIndex: KnockoutObservable<number>;
     static sortType: string;
     iconType: KnockoutObservable<string>;
+
+
+    readonlyTemplate: KnockoutObservable<any>;
+    editTemplate: KnockoutObservable<any>;
+    currentTemplate: any;
+    static resetTemplate: any;
+    currentColumn: KnockoutObservable<string>;
+
+
     constructor() {
         this.currentPage = ko.observableArray([]);
         this.pageSize = ko.observable('5');
         this.currentPageIndex = ko.observable(0);
-        ItemViewModel.users = ko.observableArray([]);
+        ItemViewModel.Collection = ko.observableArray([]);
+        this.getCollection();
         ItemViewModel.sortType = "ascending";
         this.iconType = ko.observable("");
         var _this = this;
-        $.getJSON(GetUser, function (data) {
-         
-            ItemViewModel.users(data);
-        });
+
+
+        this.currentColumn = ko.observable("");
+        this.readonlyTemplate = ko.observable("readonlyTemplate");
+        this.editTemplate = ko.observable();
+
         this.currentPage = ko.computed(function () {
             var pagesize = parseInt(_this.pageSize().toString(), 10),
                 startIndex = pagesize * _this.currentPageIndex(),
                 endIndex = startIndex + pagesize;
-            return ItemViewModel.users.slice(startIndex, endIndex);
+            return ItemViewModel.Collection.slice(startIndex, endIndex);
+        });
+
+        this.currentTemplate = function (tmpl) {
+            return tmpl === _this.editTemplate() ? 'editTemplate' : _this.readonlyTemplate();
+        };
+        // Сброс шаблона на обычный
+        ItemViewModel.resetTemplate = function (t) {
+            _this.editTemplate("readonlyTemplate");
+        };
+
+    }
+   /**
+   * Загрузка коллекции с сервера
+   */
+    getCollection(): void {
+        $.getJSON(GetUser, function (data) {
+
+            ItemViewModel.Collection(data);
         });
     }
     //следующая страница
     nextPage = function () {
-        if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.users().length) {
+        if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
             this.currentPageIndex(this.currentPageIndex() + 1);
         }
         else {
@@ -152,7 +177,7 @@ class ItemViewModel {
             this.currentPageIndex(this.currentPageIndex() - 1);
         }
         else {
-            this.currentPageIndex((Math.ceil(ItemViewModel.users().length / this.pageSize())) - 1);
+            this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize())) - 1);
         }
     };
     /**
@@ -162,7 +187,8 @@ class ItemViewModel {
      */
     sortTable(users: KnockoutObservableArray<User>, e): void {
         var orderProp = $(e.target).attr("data-column")
-        ItemViewModel.users.sort(function (left, right) {
+        this.currentColumn(orderProp);
+        ItemViewModel.Collection.sort(function (left, right) {
             var leftVal = left[orderProp];
             var rightVal = right[orderProp];
             if (ItemViewModel.sortType == "ascending") {
@@ -177,16 +203,22 @@ class ItemViewModel {
         this.iconType((ItemViewModel.sortType == "ascending") ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down");
     };
 
-    //Передача данных в окно редактирование
-    editUserDisplay = function (user) {
-        TableModel.Display(true);
-        $('#FirstName').val(user.FirstName);
-        $('#LastName').val(user.LastName);
-        $('#ID').val(user.Id);
-       
-    }
  
 }
+
+ko.components.register('Add-User', {
+    viewModel: function (params) {
+        this.FirstName = params.User.FirstName();
+        this.LastName = params.User.LastName();
+    }, template: '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h2 class="panel-title">Добавить нового пользователя</h2></div>'
+    +'<div class="panel-body">'
+    +'<form role="form">'
+    + '<div class="form-group"><label for="inpFirstName" > Имя </label> <input id="inpFirstName" type="text" class="form-control" data-bind="value: FirstName" /></div>'
+    + '<div class="form-group"> <label for="inpLastName" > Фамилия </label> <input id="inpLastName" type="text" class="form-control" data-bind="value: LastName" /></div>'
+    + '</form>'
+    + '<input type="button" id= "btnAddUser" class="btn btn-primary" value="Добавить" data-bind="click: $root.UserAction.addUser" />'
+    +'</div></div></div>'
+    });
 $(document).ready(function () {
     var viewModel = new TableModel();
     ko.applyBindings(viewModel);
