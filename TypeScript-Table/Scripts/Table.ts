@@ -23,6 +23,22 @@ class TableModel  {
 };
 
 /**
+ * Модель пользователя
+ */
+class User {
+    Id: KnockoutObservable<number>;
+    FirstName: KnockoutObservable<string>;
+    LastName: KnockoutObservable<string>;
+    constructor(id: number, firstName: string, lastName: string) {
+        this.Id = ko.observable(id);
+        this.FirstName = ko.observable(firstName);
+        this.LastName = ko.observable(lastName);
+    }
+
+
+}
+
+/**
  * Действия над пользователем
  */
 class UserAction {
@@ -86,21 +102,7 @@ class UserAction {
   
 }
 
-/**
- * Модель пользователя
- */
-class User {
-    Id: KnockoutObservable<number>;
-    FirstName: KnockoutObservable<string>;
-    LastName: KnockoutObservable<string>;
-    constructor(id: number, firstName: string,lastName: string) {
-        this.Id = ko.observable(id);
-        this.FirstName = ko.observable(firstName);
-        this.LastName = ko.observable(lastName);
-    }
-  
-  
-}
+
 /**
  * Управление таблицей
  */
@@ -230,14 +232,19 @@ ko.components.register('Table-Users', {
         this.viewModel = params.$root;
         this.User = this.viewModel.User;
         this.ItemViewModel = this.viewModel.ItemViewModel;
+        
     }, template: '<div class="col-md-9" style="float:right;">    <div class="panel panel-primary"><div class="panel-heading"><h2 class="panel-title">Список пользователй</h2></div>'
     + '<div class="panel-body"><table class="table table-striped table-bordered table-condensed" data-bind="with: ItemViewModel"><thead>'
     + '<tr data-bind="click: sortTable"><th data-column="Id">ID <span>  <i data-bind="attr: { class: iconType }"></i></span></th>'
     + '<th data-column="FirstName">Имя<span><i data-bind="attr: { class: iconType }"></i></span></th><th data-column="LastName"> Фамилия<span><i data-bind="attr: { class: iconType }"></i> </span></th><th></th><th></th></tr>'
     + '</thead>'
     + '<tbody data-bind="template: { name: currentTemplate, foreach: $root.ItemViewModel.currentPage }"></tbody>'
-    + '</table>'
+    +'<tfoot><tr><td colspan="7">Отобразить на странице:<select id="pageSizeSelector" data-bind="value: pageSize" ><option value="5" > 5 </option><option value="10" > 10 </option>'
+    +'<option value= 15" > 15 </option><option value="20" > 20 </option><option value="25" > 25 </option><option value="30" > 30 </option></select>'
+    + '<span style="padding-left:20px;" ><button data-bind="click: previousPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-backward" > </i></button>Страница <label data-bind="text: currentPageIndex() + 1" class="badge" > </label>'
+    + '<button data-bind="click: nextPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-forward" > </i></button></span></td></tr></tfoot></table>'
 });
+
 /**
 * Компонент пагинации таблицы
 */
@@ -246,12 +253,7 @@ ko.components.register('Table-Pagination', {
         this.viewModel = params.$root;
         this.User = this.viewModel.User;
         this.ItemViewModel = this.viewModel.ItemViewModel;
-    }, template: '<div class="panel panel-info"><div class="panel-heading">    <h2 class="panel-title">Редактировать  пользователя</h2 ></div>'
-    +'<div class="panel-body"><form role="form" ><div class="form-group" ><label for="test" > Имя </label><input id= "FirstName" type= "text" class="form-control" /></div>'
-    +'< div class="form-group" > <label for="LastName" > Фамилия < /label> < input id= "LastName" type= "text" class="form-control" /> <input id="ID" type= "hidden" class="form-control" data- bind="value: User.Id" />  </div>'
-    +'</form><input type= "button" id= "btnEditUser" class="btn btn-primary" value= "Изменить" data- bind="click: $root.UserAction.editUser" /> <input type="button" id= "btnCloseEditUser" class="btn btn-danger" value= "Отмена" data- bind="click: $root.UserAction.closeEditUser" style= "float:right;" /></div></div>'
-});
-
+    }, template: 
 
 $(document).ready(function () {
     var viewModel = new TableModel();
