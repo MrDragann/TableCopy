@@ -1,5 +1,6 @@
 ///<reference path="typings/jquery/jquery.d.ts" />
 ///<reference path="typings/knockout/knockout.d.ts" />
+///<reference path="typings/requirejs/require.d.ts" />
 /**
  * Константы для подключение к контролеру
  */
@@ -120,11 +121,14 @@ var ItemViewModel = (function () {
                 this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize())) - 1);
             }
         };
+        //Инцилизация пагинации
         this.currentPage = ko.observableArray([]);
         this.pageSize = ko.observable('5');
         this.currentPageIndex = ko.observable(0);
+        //Инцилизация колекции таблицы
         ItemViewModel.Collection = ko.observableArray([]);
         this.getCollection();
+        // Сортировка таблицы
         ItemViewModel.sortType = "ascending";
         this.iconType = ko.observable("");
         var _this = this;
@@ -211,15 +215,8 @@ ko.components.register('Table-Users', {
         + '<span style="padding-left:20px;" ><button data-bind="click: previousPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-backward" > </i></button>Страница <label data-bind="text: currentPageIndex() + 1" class="badge" > </label>'
         + '<button data-bind="click: nextPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-forward" > </i></button></span></td></tr></tfoot></table>'
 });
-/**
-* Компонент пагинации таблицы
-*/
-ko.components.register('Table-Pagination', {
-    viewModel: function (params) {
-        this.viewModel = params.$root;
-        this.User = this.viewModel.User;
-        this.ItemViewModel = this.viewModel.ItemViewModel;
-    }, template: $(document).ready(function () {
-        var viewModel = new TableModel();
-        ko.applyBindings(viewModel);
-    }) });
+$(document).ready(function () {
+    var viewModel = new TableModel();
+    ko.applyBindings(viewModel);
+});
+//# sourceMappingURL=Table.js.map

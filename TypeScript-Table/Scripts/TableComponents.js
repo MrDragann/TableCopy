@@ -1,5 +1,5 @@
-﻿
-/**
-* Компонент для таблицы пользовотелей
-*/
-
+﻿define(function () {
+    return function (a, b) {
+        console.log(a + b);
+    }
+})

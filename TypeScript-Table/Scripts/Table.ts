@@ -1,6 +1,6 @@
 ﻿///<reference path="typings/jquery/jquery.d.ts" />
 ///<reference path="typings/knockout/knockout.d.ts" />
-
+///<reference path="typings/requirejs/require.d.ts" />
 /**
  * Константы для подключение к контролеру
  */
@@ -21,7 +21,6 @@ class TableModel  {
     TableModel.Display = ko.observable(false);
     }
 };
-
 /**
  * Модель пользователя
  */
@@ -34,10 +33,7 @@ class User {
         this.FirstName = ko.observable(firstName);
         this.LastName = ko.observable(lastName);
     }
-
-
 }
-
 /**
  * Действия над пользователем
  */
@@ -56,7 +52,6 @@ class UserAction {
             success: function (data) {
                 console.log(dataObject);
                 ItemViewModel.Collection.push(data);
-                
             },
             error: function () {
                 console.log(dataObject);
@@ -99,15 +94,11 @@ class UserAction {
             }
         });
     };
-  
 }
-
-
 /**
  * Управление таблицей
  */
 class ItemViewModel {
-    
     public static Collection: KnockoutObservableArray<any>;
     currentPage: any;
     pageSize: KnockoutObservable<string>;
@@ -115,36 +106,32 @@ class ItemViewModel {
     static sortType: string;
     iconType: KnockoutObservable<string>;
 
-
     readonlyTemplate: KnockoutObservable<any>;
     editTemplate: KnockoutObservable<any>;
     currentTemplate: any;
     static resetTemplate: any;
     currentColumn: KnockoutObservable<string>;
-
-
     constructor() {
+        //Инцилизация пагинации
         this.currentPage = ko.observableArray([]);
         this.pageSize = ko.observable('5');
         this.currentPageIndex = ko.observable(0);
+        //Инцилизация колекции таблицы
         ItemViewModel.Collection = ko.observableArray([]);
         this.getCollection();
+        // Сортировка таблицы
         ItemViewModel.sortType = "ascending";
         this.iconType = ko.observable("");
         var _this = this;
-
-
         this.currentColumn = ko.observable("");
         this.readonlyTemplate = ko.observable("readonlyTemplate");
         this.editTemplate = ko.observable();
-
         this.currentPage = ko.computed(function () {
             var pagesize = parseInt(_this.pageSize().toString(), 10),
                 startIndex = pagesize * _this.currentPageIndex(),
                 endIndex = startIndex + pagesize;
             return ItemViewModel.Collection.slice(startIndex, endIndex);
         });
-
         this.currentTemplate = function (tmpl) {
             return tmpl === _this.editTemplate() ? 'editTemplate' : _this.readonlyTemplate();
         };
@@ -203,17 +190,13 @@ class ItemViewModel {
         ItemViewModel.sortType = (ItemViewModel.sortType == "ascending") ? "descending" : "ascending";
         this.iconType((ItemViewModel.sortType == "ascending") ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down");
     };
-
- 
 }
-
 /**
 * Компонент для регистрации пользовотеля
 */
-
 ko.components.register('Add-User', {
     viewModel: function (params) {
-        this.viewModel = params.$root;
+        this.viewModel = params.$root;  
         this.User = this.viewModel.User;
     }, template: '<div class="col-md-3"><div class="panel panel-info"><div class="panel-heading"><h2 class="panel-title">Добавить нового пользователя</h2></div>'
     + '<div class="panel-body">'
@@ -231,8 +214,7 @@ ko.components.register('Table-Users', {
     viewModel: function (params) {
         this.viewModel = params.$root;
         this.User = this.viewModel.User;
-        this.ItemViewModel = this.viewModel.ItemViewModel;
-        
+        this.ItemViewModel = this.viewModel.ItemViewModel;  
     }, template: '<div class="col-md-9" style="float:right;">    <div class="panel panel-primary"><div class="panel-heading"><h2 class="panel-title">Список пользователй</h2></div>'
     + '<div class="panel-body"><table class="table table-striped table-bordered table-condensed" data-bind="with: ItemViewModel"><thead>'
     + '<tr data-bind="click: sortTable"><th data-column="Id">ID <span>  <i data-bind="attr: { class: iconType }"></i></span></th>'
@@ -244,18 +226,8 @@ ko.components.register('Table-Users', {
     + '<span style="padding-left:20px;" ><button data-bind="click: previousPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-backward" > </i></button>Страница <label data-bind="text: currentPageIndex() + 1" class="badge" > </label>'
     + '<button data-bind="click: nextPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-forward" > </i></button></span></td></tr></tfoot></table>'
 });
-
-/**
-* Компонент пагинации таблицы
-*/
-ko.components.register('Table-Pagination', {
-    viewModel: function (params) {
-        this.viewModel = params.$root;
-        this.User = this.viewModel.User;
-        this.ItemViewModel = this.viewModel.ItemViewModel;
-    }, template: 
-
 $(document).ready(function () {
     var viewModel = new TableModel();
     ko.applyBindings(viewModel);
+   
 });
