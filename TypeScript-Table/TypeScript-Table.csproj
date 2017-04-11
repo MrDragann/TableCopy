@@ -186,6 +186,7 @@
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\components\AddUser\AddUserHTML.html" />
+    <Content Include="Scripts\components\TableUsers\TableUsersHTML.html" />
     <Content Include="Scripts\components\TemplateTable.html" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

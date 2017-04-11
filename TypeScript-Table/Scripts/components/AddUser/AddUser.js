@@ -1,4 +1,4 @@
-define(["require", "exports", "knockout", "Table"], function (require, exports, ko, test) {
+define(["require", "exports", "knockout", "components/TableUsers/TableUsers"], function (require, exports, ko, test) {
     "use strict";
     var ViewModel;
     (function (ViewModel) {

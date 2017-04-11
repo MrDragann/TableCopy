@@ -3,7 +3,7 @@
     loaded for the click-to-edit viewmodel
  */
 import ko = require("knockout");
-import test = require("Table");
+import test = require("components/TableUsers/TableUsers");
 module ViewModel {
    
 
