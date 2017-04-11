@@ -8,7 +8,7 @@
     $(document).ready(function () {
         var viewModel = {
             
-            UserAction: new UserAction()
+           
         };
         ko.applyBindings(viewModel);
 
@@ -35,7 +35,7 @@ const GetUser = '/home/GetUsers';
   
     class TableModel {
        
-        UserAction: UserAction = new UserAction();
+      
         User: User = new User(null, '', '');
         //Модальное окно для редактирование пользователя
         static Display: KnockoutObservable<boolean>;
@@ -248,4 +248,4 @@ const GetUser = '/home/GetUsers';
         //    + '<span style="padding-left:20px;" ><button data-bind="click: previousPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-backward" > </i></button>Страница <label data-bind="text: currentPageIndex() + 1" class="badge" > </label>'
         //    + '<button data-bind="click: nextPage($data)" class="btn btn-sm" > <i class="glyphicon glyphicon-step-forward" > </i></button></span></td></tr></tfoot></table>'
         //});
-    }
+    
