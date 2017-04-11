@@ -118,7 +118,7 @@ const GetUser = '/home/GetUsers';
     /**
      * Управление таблицей
      */
-    class ItemViewModel {
+    export class ItemViewModel {
         public static Collection: KnockoutObservableArray<any>;
         currentPage: any;
         pageSize: KnockoutObservable<string>;

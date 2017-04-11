@@ -1,4 +1,4 @@
-define(["require", "exports", "knockout"], function (require, exports, ko) {
+define(["require", "exports", "knockout", "Table"], function (require, exports, ko, test) {
     "use strict";
     var ViewModel;
     (function (ViewModel) {
@@ -22,7 +22,7 @@ define(["require", "exports", "knockout"], function (require, exports, ko) {
                     success: function (data) {
                         console.log(dataObject);
                         user.FirstName('');
-                        //ItemViewModel.Collection.push(data);
+                        test.ItemViewModel.Collection.push(data);
                     },
                     error: function () {
                         console.log(dataObject);

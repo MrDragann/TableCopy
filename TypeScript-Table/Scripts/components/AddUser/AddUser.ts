@@ -3,11 +3,10 @@
     loaded for the click-to-edit viewmodel
  */
 import ko = require("knockout");
+import test = require("Table");
 module ViewModel {
    
-    export interface clickToEditParams {
-        value: KnockoutObservable<string>;
-    }
+
 
     export class AddUser {
         Id: KnockoutObservable<number>;
@@ -32,7 +31,7 @@ module ViewModel {
                 success: function (data) {
                     console.log(dataObject);
                     user.FirstName('');
-                    //ItemViewModel.Collection.push(data);
+                    test.ItemViewModel.Collection.push(data);
                 },
                 error: function () {
                     console.log(dataObject);

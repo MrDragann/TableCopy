@@ -189,6 +189,7 @@ define(["require", "exports", "components/AddUser/AddUserRegister"], function (r
         ;
         return ItemViewModel;
     }());
+    exports.ItemViewModel = ItemViewModel;
     /**
     * Компонент для регистрации пользовотеля
     */
