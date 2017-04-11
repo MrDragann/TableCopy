@@ -7,7 +7,7 @@ define(["require", "exports", "knockout"], function (require, exports, ko) {
             function ItemViewModel() {
                 //следующая страница
                 this.nextPage = function () {
-                    if (((this.currentPageIndex() + 1) * this.pageSize) < ItemViewModel.Collection().length) {
+                    if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
                         this.currentPageIndex(this.currentPageIndex() + 1);
                     }
                     else {

@@ -57,7 +57,7 @@ const GetUser = '/home/GetUsers';
         }
         //следующая страница
         nextPage = function () {
-            if (((this.currentPageIndex() + 1) * this.pageSize) < ItemViewModel.Collection().length) {
+            if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
                 this.currentPageIndex(this.currentPageIndex() + 1);
             }
             else {
