@@ -2,14 +2,13 @@
 @{
     ViewBag.Title = "Home Page";
 }
-<input type="hidden" id="serverJSON" value="@Newtonsoft.Json.JsonConvert.SerializeObject(Model)" />
 <div class="page-header">
     <h2 class="text-center">Регистрация пользовтеля</h2>
 </div>
 
 <div class="row">
     <!--Регистрация пользователя-->
-    <div data-bind='component:  {name: "Add-User"}'>
+    <div data-bind='component: "Add-User"'>
 
     </div>
 
@@ -17,7 +16,7 @@
 
     <Add-User params="value: LastName"></Add-User>
     <!--Таблица пользователей-->
-    <div data-bind='component: {name: "Table-Users",params: {  $root }}'></div>
+    <div data-bind='component: "Table-Users"'></div>
     <!--Конец таблицы пользователей-->
 
     </div>

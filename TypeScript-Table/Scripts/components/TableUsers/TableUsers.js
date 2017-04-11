@@ -5,27 +5,9 @@ define(["require", "exports", "knockout"], function (require, exports, ko) {
     (function (ViewModel) {
         var ItemViewModel = (function () {
             function ItemViewModel() {
-                //следующая страница
-                this.nextPage = function () {
-                    if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
-                        this.currentPageIndex(this.currentPageIndex() + 1);
-                    }
-                    else {
-                        this.currentPageIndex(0);
-                    }
-                };
-                //предыдущая страница
-                this.previousPage = function () {
-                    if (this.currentPageIndex() > 0) {
-                        this.currentPageIndex(this.currentPageIndex() - 1);
-                    }
-                    else {
-                        this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize)) - 1);
-                    }
-                };
                 //Инцилизация пагинации
                 this.currentPage = ko.observableArray([]);
-                this.pageSize = ko.observable('5');
+                this.pageSize = ko.observable(5);
                 this.currentPageIndex = ko.observable(0);
                 //Инцилизация колекции таблицы
                 ItemViewModel.Collection = ko.observableArray([]);
@@ -38,7 +20,7 @@ define(["require", "exports", "knockout"], function (require, exports, ko) {
                 this.readonlyTemplate = ko.observable("readonlyTemplate");
                 this.editTemplate = ko.observable();
                 this.currentPage = ko.computed(function () {
-                    var pagesize = parseInt(_this.pageSize.toString(), 10), startIndex = pagesize * _this.currentPageIndex(), endIndex = startIndex + pagesize;
+                    var pagesize = parseInt(_this.pageSize().toString(), 10), startIndex = pagesize * _this.currentPageIndex(), endIndex = startIndex + pagesize;
                     return ItemViewModel.Collection.slice(startIndex, endIndex);
                 });
                 this.currentTemplate = function (tmpl) {
@@ -57,6 +39,26 @@ define(["require", "exports", "knockout"], function (require, exports, ko) {
                     ItemViewModel.Collection(data);
                 });
             };
+            //следующая страница
+            ItemViewModel.prototype.nextPage = function () {
+                if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
+                    this.currentPageIndex(this.currentPageIndex() + 1);
+                }
+                else {
+                    this.currentPageIndex(0);
+                }
+            };
+            ;
+            //предыдущая страница
+            ItemViewModel.prototype.previousPage = function () {
+                if (this.currentPageIndex() > 0) {
+                    this.currentPageIndex(this.currentPageIndex() - 1);
+                }
+                else {
+                    this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize())) - 1);
+                }
+            };
+            ;
             /**
              * Сортировка таблицы
              * @param users Пользователь

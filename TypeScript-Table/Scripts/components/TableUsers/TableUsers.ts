@@ -6,7 +6,7 @@ const GetUser = '/home/GetUsers';
 
         public static Collection: KnockoutObservableArray<any>;
         currentPage: any;
-        pageSize: KnockoutObservable<string>;
+        pageSize: KnockoutObservable<number>;
         currentPageIndex: KnockoutObservable<number>;
         static sortType: string;
         iconType: KnockoutObservable<string>;
@@ -19,7 +19,7 @@ const GetUser = '/home/GetUsers';
         constructor() {
             //Инцилизация пагинации
             this.currentPage = ko.observableArray([]);
-            this.pageSize = ko.observable('5');
+            this.pageSize = ko.observable(5);
             this.currentPageIndex = ko.observable(0);
             //Инцилизация колекции таблицы
             ItemViewModel.Collection = ko.observableArray([]);
@@ -32,7 +32,7 @@ const GetUser = '/home/GetUsers';
             this.readonlyTemplate = ko.observable("readonlyTemplate");
             this.editTemplate = ko.observable();
             this.currentPage = ko.computed(function () {
-                var pagesize = parseInt(_this.pageSize.toString(), 10),
+                var pagesize = parseInt(_this.pageSize().toString(), 10),
                     startIndex = pagesize * _this.currentPageIndex(),
                     endIndex = startIndex + pagesize;
                 return ItemViewModel.Collection.slice(startIndex, endIndex);
@@ -56,8 +56,8 @@ const GetUser = '/home/GetUsers';
             });
         }
         //следующая страница
-        nextPage = function () {
-            if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
+        nextPage(): void {
+            if (((this.currentPageIndex() + 1) * this.pageSize) < ItemViewModel.Collection().length) {
                 this.currentPageIndex(this.currentPageIndex() + 1);
             }
             else {
@@ -65,12 +65,12 @@ const GetUser = '/home/GetUsers';
             }
         };
         //предыдущая страница
-        previousPage = function () {
+        previousPage(): void {
             if (this.currentPageIndex() > 0) {
                 this.currentPageIndex(this.currentPageIndex() - 1);
             }
             else {
-                this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize)) - 1);
+                this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize()) - 1);
             }
         };
         /**
