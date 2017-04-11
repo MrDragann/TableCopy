@@ -1,0 +1,16 @@
+﻿<div class="col-md-3">
+    <div class="panel panel-info">
+        <div class="panel-heading"><h2 class="panel-title">Добавить нового пользователя</h2></div>
+       <div class="panel-body">
+           
+           <form role="form">
+            
+                <div class="form-group"><label for="inpFirstName"> Имя </label> <input id="inpFirstName" type="text" class="form-control" data-bind="value: $data.firstName" /></div>
+               <div class="form-group"> <label for="inpLastName"> Фамилия </label> <input id="inpLastName" type="text" class="form-control" data-bind="value:  $data.lastName" /></div>
+              
+            </form>
+            <input type="button" id="btnAddUser" class="btn btn-primary" value="Добавить" data-bind="click:addUser" />
+           
+        </div>
+    </div>
+</div>

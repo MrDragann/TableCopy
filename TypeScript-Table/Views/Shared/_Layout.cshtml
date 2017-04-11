@@ -38,6 +38,12 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Scripts/knockout-3.4.2.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/require.js"></script>
+    <script src="~/Scripts/requiere/Config.js"></script>
+    <script> require(["jquery", "bootstrap"]);</script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

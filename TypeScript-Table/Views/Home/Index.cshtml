@@ -9,11 +9,13 @@
 
 <div class="row">
     <!--Регистрация пользователя-->
-    <div data-bind='component:  {name: "Add-User",params: {  $root }}'>
-        
+    <div data-bind='component:  {name: "Add-User"}'>
+
     </div>
+
     <!--Конец регистрации пользователя-->
 
+    <Add-User params="value: LastName"></Add-User>
     <!--Таблица пользователей-->
     <div data-bind='component: {name: "Table-Users",params: {  $root }}'></div>
     <!--Конец таблицы пользователей-->
@@ -52,7 +54,9 @@
     </script>
 
 @section scripts{
-<script src="~/Scripts/knockout-3.4.2.js"></script>
-<script src="~/Scripts/require.js"></script>
-<script src="~/Scripts/Table.js"></script>
+
+
+<script>
+        require(["Table"]);
+</script>
 }
