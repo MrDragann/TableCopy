@@ -30,12 +30,12 @@
                     </tr>
                 </thead>
 
-                <tbody data-bind="template: { name: currentTemplate, foreach: currentPage }">
+                <tbody data-bind="template: { name: 'readonlyTemplate', foreach: $root.Table.Collection($root) }">
                   
                     
                </tbody>
                 <tfoot>
-                    <tr>
+                    <!--<tr>
                         <td colspan="7">
                             Отобразить на странице:
                             <select id="pageSizeSelector" data-bind="value: pageSize">
@@ -52,20 +52,22 @@
                                 <button data-bind="click: nextPage($data)" class="btn btn-sm"><i class="glyphicon glyphicon-step-forward"></i></button>
                             </span>
                         </td>
-                    </tr>
+                    </tr>-->
                 </tfoot>
             </table>
         </div>
     </div>
 </div>
+
+<!--Шаблон чтения-->
 <script type="text/html" id="readonlyTemplate">
     <tr>
         <td data-bind="text: Id"></td>
         <td data-bind="text: FirstName"></td>
         <td data-bind="text: LastName"></td>
 
-        <td><button type="button" class="btn btn-warning btn-xs " data-bind="click: $parent.editTemplate">Редактировать</button></td>
-        <td><button type="button" class="btn btn-danger btn-xs " data-bind="click: $root.UserAction.removeUsers">Удалить</button></td>
+        <td><!--<button type="button" class="btn btn-warning btn-xs " data-bind="click: $parent.editTemplate">Редактировать</button>--></td>
+        <td><!--<button type="button" class="btn btn-danger btn-xs " data-bind="click: $root.UserAction.removeUsers">Удалить</button>--></td>
     </tr>
 </script>
 <!-- Шаблон редактирования-->

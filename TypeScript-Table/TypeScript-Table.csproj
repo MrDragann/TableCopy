@@ -185,9 +185,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\components\AddUser\AddUserHTML.html" />
-    <Content Include="Scripts\components\TableUsers\TableUsersHTML.html" />
-    <Content Include="Scripts\components\TemplateTable.html" />
+    <Content Include="Scripts\components\user\add\template\index.html" />
+    <Content Include="Scripts\components\user\table\template\index.html" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -238,11 +237,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\components\AddUser\AddUser.ts" />
-    <TypeScriptCompile Include="Scripts\components\AddUser\AddUserRegister.ts" />
-    <TypeScriptCompile Include="Scripts\components\TableUsers\TableUsers.ts" />
-    <TypeScriptCompile Include="Scripts\components\TableUsers\TableUsersRegister.ts" />
+    <TypeScriptCompile Include="Scripts\components\user\add\index.ts" />
+    <TypeScriptCompile Include="Scripts\components\user\table\index.ts" />
     <TypeScriptCompile Include="Scripts\requiere\Config.ts" />
+    <TypeScriptCompile Include="Scripts\requiere\init.ts" />
     <TypeScriptCompile Include="Scripts\Table.ts" />
     <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />
   </ItemGroup>

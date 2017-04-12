@@ -1,7 +1,8 @@
 ﻿﻿import ko = require("knockout");
-import Users = require('components/AddUser/AddUser');
+import Users = require('components/user/add/index');
 const GetUser = '/home/GetUsers';
- module ViewModel {
+export namespace Component {
+
     export class ItemViewModel {
 
         public static Collection: KnockoutObservableArray<any>;
@@ -44,8 +45,12 @@ const GetUser = '/home/GetUsers';
             ItemViewModel.resetTemplate = function (t) {
                 _this.editTemplate("readonlyTemplate");
             };
-
+            
         }
+
+        Collection(model: any): any {
+                return ItemViewModel.Collection();
+            }
         /**
         * Загрузка коллекции с сервера
         */
@@ -57,7 +62,7 @@ const GetUser = '/home/GetUsers';
         }
         //следующая страница
         nextPage(): void {
-            if (((this.currentPageIndex() + 1) * this.pageSize) < ItemViewModel.Collection().length) {
+            if (((this.currentPageIndex() + 1) * this.pageSize()) < ItemViewModel.Collection().length) {
                 this.currentPageIndex(this.currentPageIndex() + 1);
             }
             else {
@@ -70,7 +75,7 @@ const GetUser = '/home/GetUsers';
                 this.currentPageIndex(this.currentPageIndex() - 1);
             }
             else {
-                this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize()) - 1);
+                this.currentPageIndex((Math.ceil(ItemViewModel.Collection().length / this.pageSize()) - 1));
             }
         };
         /**
@@ -78,7 +83,7 @@ const GetUser = '/home/GetUsers';
          * @param users Пользователь
          * @param e Jqvery.Event
          */
-        sortTable(users: KnockoutObservableArray<Users.AddUser>, e): void {
+        sortTable(users: KnockoutObservableArray<Users.Component.AddUser>, e): void {
             var orderProp = $(e.target).attr("data-column")
             this.currentColumn(orderProp);
             ItemViewModel.Collection.sort(function (left, right) {
@@ -97,9 +102,6 @@ const GetUser = '/home/GetUsers';
         };
     }
 }
-export = ViewModel;
-// return the 'class' which is the constructor function
-//return ClickToEditViewModel;
 /**
  * Url добавления студента
  */

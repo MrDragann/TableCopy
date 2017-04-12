@@ -1,13 +1,9 @@
-﻿/*
-    click-to-edit component viewmodel file
-    loaded for the click-to-edit viewmodel
- */
+﻿
 import ko = require("knockout");
-import test = require("components/TableUsers/TableUsers");
-module ViewModel {
+import Table = require("components/user/table/index");
+
+export namespace Component {
    
-
-
     export class AddUser {
         Id: KnockoutObservable<number>;
         FirstName: KnockoutObservable<string>;
@@ -18,9 +14,9 @@ module ViewModel {
             this.LastName = ko.observable(lastName);
         }
         /**
-                * Добавление пользователя
-                * @param user Модель таблицы
-                */
+         * Добавление пользователя
+         * @param user Модель таблицы
+         */
         addUser(user: AddUser): void {
             var dataObject = ko.toJSON(user);
             $.ajax({
@@ -31,7 +27,7 @@ module ViewModel {
                 success: function (data) {
                     console.log(dataObject);
                     user.FirstName('');
-                    test.ItemViewModel.Collection.push(data);
+                    Table.Component.ItemViewModel.Collection.push(data);
                 },
                 error: function () {
                     console.log(dataObject);
@@ -42,9 +38,6 @@ module ViewModel {
     }
 
 }
-export = ViewModel;
-// return the 'class' which is the constructor function
-//return ClickToEditViewModel;
 /**
  * Url добавления студента
  */
